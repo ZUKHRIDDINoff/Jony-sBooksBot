@@ -18,7 +18,7 @@ bot.start(async ctx => {
         if(await isAdmin(userId) || await isCreator(userId)) {
             return creatorMenu(ctx, userId);
         }
-        else if(await isMember(userId)) {
+        else if(await isMember(userId) ) {
             return customerMenu(ctx, userId)
         } else {
             const message = "❌ Kechirasiz botdan foydalanish uchun quyidagi kanalga a'zo bolishingizni so'raymiz."
@@ -40,7 +40,7 @@ bot.start(async ctx => {
             return  sendMessage(userId, message, extra);
         }
     } catch (error) {
-        console.log('Error with star button' + error.message);
+        console.log('Error with start button' + error.message);
     }
 })
 bot.action('checkAllFiles', async ctx => {
@@ -89,12 +89,11 @@ bot.action('backToCustomerMenu', async ctx => {
 
 bot.action('checkSubscription', async (ctx) => {
     try {
-        const ctxMessage = ctx.update.callback_query;
-        const userStatus = await bot.telegram.getChatMember(`@${channelUsername}`, ctxMessage.from.id)
-    
-        if (userStatus && (userStatus.status == 'member' || userStatus.status == 'administrator' || userStatus.status == 'creator')) {
-            lastFileId = await ctx.reply("Siz shartlarni bajardingiz! Sizga fayl yuborilmoqda...");
-            return await sendFile(ctxMessage);
+        const ctxMessage = ctx.update.callback_query;   
+
+        if (await isMember(ctxMessage.from.id)) {
+            await customerMenu(ctx, ctxMessage.from.id);
+            return deleteMessage(ctx);
         }
     
         const message = "❌ Kechirasiz botdan foydalanish uchun quyidagi kanalga a'zo bolishingizni so'raymiz."
@@ -113,8 +112,9 @@ bot.action('checkSubscription', async (ctx) => {
             }
         }
 
-        return sendMessage(ctxMessage.from.id, message, extra);
-
+        await sendMessage(ctxMessage.from.id, message, extra);
+        await deleteMessage(ctx)
+        
     } catch (error) {
         console.log('Problem while checking subscription' + error.message);
     }
