@@ -6,7 +6,7 @@ async function downnloadFl(fileLink, fileName) {
     try {
         // Inside the document event handler
         const response = await axios.get(fileLink, { responseType: 'stream' });
-        const filePath = path.join(__dirname) + `/files/${fileName}`;  // Set the desired directory and filename
+        const filePath = path.join(__dirname, '..') + `/files/${fileName}`;  // Set the desired directory and filename
         const fileStream = fs.createWriteStream(filePath);
 
         response.data.pipe(fileStream);
