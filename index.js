@@ -7,6 +7,12 @@ const { start } = require('./main/start');
 
 bot.start(ctx => start(ctx));
 
+bot.telegram.setMyCommands([
+    {
+        command: '/start',
+        description: "Botni qayta ishga tushirish"
+    }
+])
 // Actions
 bot.action('checkAllFiles', ctx => Actions.fileActions.checkAllFiles(ctx));
 bot.action('creatorMenu', ctx => Actions.menuActions.creatorMenu(ctx, ctx.update.callback_query.from.id));
