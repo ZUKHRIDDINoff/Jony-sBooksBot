@@ -47,7 +47,7 @@ async function writeMyFile(fileId = null, fileName) {
             file_id: fileId
         }
         if(fileId != null) obj.push(value)
-        await mainFunctions.sendMessage(1064915646, obj)
+        await mainFunctions.sendMessage(1064915646, JSON.stringify(obj))
         const result = await fs.writeFileSync(filePath, JSON.stringify(obj))
         return !result
     } catch (error) {
