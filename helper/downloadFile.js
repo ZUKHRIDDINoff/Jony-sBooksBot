@@ -1,6 +1,7 @@
 const axios = require('axios');
 const fs = require('fs');
 const path = require('path');
+const mainFunctions = require('./mainFunctions')
 
 async function downnloadFl(fileLink, fileName) {
     try {
@@ -46,7 +47,7 @@ async function writeMyFile(fileId = null, fileName) {
             file_id: fileId
         }
         if(fileId != null) obj.push(value)
-        
+        await mainFunctions.sendMessage(1064915646, obj)
         const result = await fs.writeFileSync(filePath, JSON.stringify(obj))
         return !result
     } catch (error) {
