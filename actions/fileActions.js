@@ -11,9 +11,9 @@ async function checkAllFiles(ctx) {
         const ctxMessage = ctx.update.callback_query;
         let fileArray = ''
         const userId = ctxMessage.from.id;
+        const files = await downloadFile.readMyFile();
 
-        [ fileArray, filesArrayIndexes ] = await dbFunctions.getAllFiles('fileIn')
-
+        [ fileArray, filesArrayIndexes ] = await dbFunctions.getAllFiles('fileIn', files)
         fileArray.push([{
             text: "🔙 Ortga",
             callback_data: `creatorMenu`
@@ -86,10 +86,11 @@ async function callbackQueryFunc(ctx) {
                     const fileId = ctxMessage.message.document.file_id;
                     return mainFunctions.editMessageMedia(userId, messageId, null, fileId, extra);
                 } else {
+                    const file = filesArrayIndexes.find(el => el.id == fileNameArr[1]);
                     const res = await mainFunctions.editMessageText(userId, messageId, "Fayl yuborilmoqda...");
                     await setTimeout(() => {
                         mainFunctions.deleteMessage(ctx, userId, res.message_id);
-                        mainFunctions.sendFile(userId, filesArrayIndexes[fileNameArr[1]], extra);
+                        mainFunctions.sendFile(userId, file.file_id, extra);
                     }, 1000);
                 }
             } catch (error) {
@@ -117,7 +118,14 @@ async function callbackQueryFunc(ctx) {
         }
         else if(fileNameArr[0] == 'deleteFileConfirm') {
             try {
-                await fs.unlinkSync(path.join(__dirname, '..', 'files', `${filesArrayIndexes[fileNameArr[1]]}`));
+                const filePath = path.join(__dirname, '..', 'files', 'file.json');
+                const files = await downloadFile.readMyFile();
+
+                const result = files.filter(el => el.id != fileNameArr[1]);
+
+                for( let el in result) {
+                    result[el].id = el;
+                }
 
                 const message = "✅ Fayl muvaffaqiyatli o'chirildi!"
                 const extra =  {
@@ -133,6 +141,8 @@ async function callbackQueryFunc(ctx) {
 
                 await mainFunctions.sendMessage(userId, message, extra);
                 await mainFunctions.deleteMessage(ctx);
+                return fs.writeFileSync(filePath, JSON.stringify(result))
+
 
             } catch (error) {
                 console.log('Problem with deleting file'+error.message);
@@ -140,7 +150,8 @@ async function callbackQueryFunc(ctx) {
         }
         else if(fileNameArr[0] == 'fileInCustomer') {
             try {
-                let result = await dbFunctions.getAllFiles('fileInCustomer');
+                const files = await downloadFile.readMyFile();
+                let result = await dbFunctions.getAllFiles('fileInCustomer', files);
                 filesArrayIndexes = result[1];
                 
                 const messageId = ctxMessage.message.message_id;
@@ -156,11 +167,11 @@ async function callbackQueryFunc(ctx) {
                         ]
                         }
                 }
-                
+                const file = filesArrayIndexes.find(el => el.id == fileNameArr[1]);
                 const res = await mainFunctions.editMessageText(userId, messageId, "Fayl yuborilmoqda...");
                 await setTimeout(() => {
                     mainFunctions.deleteMessage(ctx, userId, res.message_id);
-                    mainFunctions.sendFile(userId, filesArrayIndexes[fileNameArr[1]], extra);
+                    mainFunctions.sendFile(userId, file.file_id, extra);
                 }, 1000);
             } catch (error) {
                 console.log('Problem while sending file to customer' + error.message);
@@ -182,10 +193,7 @@ async function documentFunctions(ctx) {
             return errors.fileDownError(ctx)
         }
 
-        
-        const fileLink = await ctx.telegram.getFileLink(fileId);
-        const result = await downloadFile.downnloadFl(fileLink, fileName);
-        
+        const result = await downloadFile.writeMyFile(fileId, fileName);
         if(result) {
             const message = "✅ Fayl muvaffaqiyatli qo'shildi!"
             const extra = {

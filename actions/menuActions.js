@@ -1,4 +1,4 @@
-const { mainFunctions, isWho, errors, dbFunctions } = require('../helper/index');
+const { mainFunctions, isWho, errors, dbFunctions, downloadFile } = require('../helper/index');
 
 
 async function creatorMenu(ctx, userId) {
@@ -37,7 +37,9 @@ async function customerMenu(ctx) {
             return mainFunctions.editMessageMedia(userId, lastMessageId, null, fileId);
         } 
 
-        let result = await dbFunctions.getAllFiles('fileInCustomer');
+        const files = await downloadFile.readMyFile();
+        let result = await dbFunctions.getAllFiles('fileInCustomer', files);
+        console.log(4,result);
         const message = "📁 Mavjud fayllar:"
         const extra = {
             reply_markup: {

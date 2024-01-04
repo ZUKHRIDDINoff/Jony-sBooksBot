@@ -1,4 +1,4 @@
-const { isWho, mainFunctions, errors } = require('../helper/index');
+const { isWho, mainFunctions, errors, downloadFile } = require('../helper/index');
 const { getAllFiles } = require('../helper/dbFunctions');
 const Actions = require('../actions/index')
 async function start(ctx) {
@@ -8,7 +8,8 @@ async function start(ctx) {
             return Actions.menuActions.creatorMenu(ctx, userId);
         }
         else if(await isWho.isMember(userId) ) {
-            let result = await getAllFiles('fileInCustomer');
+            const files = await downloadFile.readMyFile();
+            let result = await getAllFiles('fileInCustomer', files);
             filesArrayIndexes = result[1];
             const message = "📁 Mavjud fayllar:"
             const extra = {

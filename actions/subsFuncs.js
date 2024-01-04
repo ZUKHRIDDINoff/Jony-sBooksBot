@@ -1,4 +1,4 @@
-const { isWho, dbFunctions, mainFunctions } = require('../helper/index');
+const { isWho, dbFunctions, mainFunctions, downloadFile } = require('../helper/index');
 
 async function checkSubscription(ctx) {
     try {
@@ -8,7 +8,8 @@ async function checkSubscription(ctx) {
 
         if (await isWho.isMember(userId)) {
             // const { messageId, message, extra } = await customerMenu();
-            let result = await dbFunctions.getAllFiles('fileInCustomer');
+            const files = await downloadFile.readMyFile();
+            let result = await dbFunctions.getAllFiles('fileInCustomer', files);
             const message = "📁 Mavjud fayllar:"
             const extra = {
                 reply_markup: {

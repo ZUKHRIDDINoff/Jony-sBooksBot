@@ -1,17 +1,16 @@
 const fs = require('fs');
 const path = require('path');
 
-async function getAllFiles(openFile) {
+async function getAllFiles(openFile, files = []) {
     try {
         let filesArray = [];
         let filesArrayIndexes = [];
 
-        const files = fs.readdirSync(path.join(__dirname, '..', 'files'));
         for(let key in files) {
             filesArray.push(
                 [{
-                    text: files[key],
-                    callback_data: `${openFile}<>${key}`
+                    text: files[key].file_name,
+                    callback_data: `${openFile}<>${files[key].id}`
                 }]
             )
             filesArrayIndexes.push(files[key]);

@@ -1,9 +1,11 @@
 const { getAllFiles } = require('./dbFunctions');
-
+const downloadFile  = require('./downloadFile')
 
 async function customerMenu(ctxMessage) {
     try {
-        let result = await getAllFiles('fileInCustomer');
+        const files = await downloadFile.readMyFile();
+
+        let result = await getAllFiles('fileInCustomer', files);
         filesArrayIndexes = result[1];
         const message = "📁 Mavjud fayllar:"
         const messageId = ctxMessage.message.message_id;

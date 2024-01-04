@@ -21,9 +21,42 @@ async function downnloadFl(fileLink, fileName) {
         console.log('Problem while downloading file' + error.message);
         return 0;
     }
+}
+
+
+async function readMyFile() {
+    try {
+        const filePath = path.join(__dirname, '..', 'files', 'file.json');
+        let obj = JSON.parse(fs.readFileSync(filePath, 'utf8'));
+        return obj
+    } catch (error) {
+        console.log('Error while readMyFile function: ' + error.message);
+    }
+}
+
+// readMyFile()
+
+async function writeMyFile(fileId = null, fileName) {
+    try {
+        const filePath = path.join(__dirname, '..', 'files', 'file.json');
+        let obj = JSON.parse(fs.readFileSync(filePath, 'utf8'));
+        const value = {
+            id: obj.length,
+            file_name: fileName,
+            file_id: fileId
+        }
+        if(fileId != null) obj.push(value)
+        
+        const result = await fs.writeFileSync(filePath, JSON.stringify(obj))
+        return !result
+    } catch (error) {
+        console.log('Error while writeMyFile function: ' + error.message);
+    }
     
 }
 
 module.exports = {
-    downnloadFl
+    downnloadFl,
+    readMyFile,
+    writeMyFile
 }

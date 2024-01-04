@@ -40,10 +40,9 @@ async function answerCallbackQuery(clbk_id, text, show_alert = false) {
 }
 
 // Send file to user
-async function sendFile(userId, fileName, extra = {}) {
+async function sendFile(userId, fileId, extra = {}) {
     try {
-        const filePath = path.join(__dirname, '..', 'files', `${fileName}`);
-        lastFileId = await bot.telegram.sendDocument(userId,{ source: fs.readFileSync(filePath), filename: `${fileName}`}, extra);
+        lastFileId = await bot.telegram.sendDocument(userId,fileId, extra);
 
     } catch (error) {
         console.log('Error with sending file' + error.message);
