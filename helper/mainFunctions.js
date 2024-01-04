@@ -17,7 +17,7 @@ async function editMessageText(userId, messageId, text, extra) {
 
         return result;
     } catch (error) {
-        console.log('Error while editMessage function: ' + error.message);
+        console.log('Error while editMessageText function: ' + error.message);
     }
 }
 
@@ -27,7 +27,7 @@ async function editMessageMedia(userId, messageId, text = null, fileId,  extra =
         const result = bot.telegram.editMessageMedia(userId, messageId, null, { type: 'document', media: fileId, caption: text}, extra);
         return result;
     } catch (error) {
-        console.log('Error while editMessage function: ' + error.message);
+        console.log('Error while editMessageMedia function: ' + error.message);
     }
 }
 
