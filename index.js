@@ -5,6 +5,18 @@ const bot = new Telegraf(config.get('TELEGRAM_BOT_TOKEN'));
 const Actions = require('./actions/index');
 const { start } = require('./main/start');
 
+const express = require('express')
+const app = express()
+const port = 3000
+
+app.get('/', (req, res) => {
+  res.send('Hello World!')
+})
+
+app.listen(port, () => {
+  console.log(`Example app listening on port ${port}`)
+})
+
 bot.start(ctx => start(ctx));
 
 bot.telegram.setMyCommands([
