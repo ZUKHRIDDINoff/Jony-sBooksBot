@@ -5,17 +5,17 @@ const bot = new Telegraf(config.get('TELEGRAM_BOT_TOKEN'));
 const Actions = require('./actions/index');
 const { start } = require('./main/start');
 
-// const express = require('express')
-// const app = express()
-// const port = 3300
+const express = require('express')
+const app = express()
+const port = 3300
 
-// app.get('/', (req, res) => {
-//   res.send('Hello World!')
-// })
+app.get('/', (req, res) => {
+  res.send('Hello World!')
+})
 
-// app.listen(port, () => {
-//   console.log(`Example app listening on port ${port}`)
-// })
+app.listen(port, () => {
+  console.log(`Example app listening on port ${port}`)
+})
 
 bot.start(ctx => start(ctx));
 
